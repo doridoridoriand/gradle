@@ -16,11 +16,11 @@
 
 package org.gradle.api.internal.plugins
 
-import org.gradle.api.reflect.TypeOf;
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.internal.ThreadGlobalInstantiator
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.gradle.api.reflect.TypeOf
 import spock.lang.Specification
 
 class ExtensionContainerTest extends Specification {
