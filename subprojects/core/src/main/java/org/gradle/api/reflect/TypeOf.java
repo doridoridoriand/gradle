@@ -20,6 +20,7 @@ import com.google.common.base.Objects;
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
 import org.gradle.api.Incubating;
+import org.gradle.internal.Cast;
 import org.gradle.internal.reflect.Types;
 
 import java.lang.reflect.ParameterizedType;
@@ -83,16 +84,16 @@ public abstract class TypeOf<T> {
         this.token = token;
     }
 
-    @SuppressWarnings("unchecked")
     protected TypeOf() {
+        this.token = captureTypeArgument();
+    }
+
+    private TypeToken<T> captureTypeArgument() {
         Type genericSuperclass = getClass().getGenericSuperclass();
-        Type type;
-        if (genericSuperclass instanceof ParameterizedType) {
-            type = ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
-        } else {
-            type = Object.class;
-        }
-        token = (TypeToken<T>) TypeToken.of(type);
+        Type type = genericSuperclass instanceof ParameterizedType
+            ? ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0]
+            : Object.class;
+        return Cast.uncheckedCast(TypeToken.of(type));
     }
 
     public final Type getType() {
