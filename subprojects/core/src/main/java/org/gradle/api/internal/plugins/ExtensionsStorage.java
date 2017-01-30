@@ -61,13 +61,13 @@ public class ExtensionsStorage {
         return schema;
     }
 
-    public void checkExtensionIsNotReassigned(String name) {
+    void checkExtensionIsNotReassigned(String name) {
         if (hasExtension(name)) {
             throw new IllegalArgumentException(String.format("There's an extension registered with name '%s'. You should not reassign it via a property setter.", name));
         }
     }
 
-    public boolean isConfigureExtensionMethod(String methodName, Object... arguments) {
+    boolean isConfigureExtensionMethod(String methodName, Object... arguments) {
         return hasExtension(methodName) && arguments.length == 1 && arguments[0] instanceof Closure;
     }
 
@@ -180,7 +180,7 @@ public class ExtensionsStorage {
         private boolean configured;
         private Throwable configureFailure;
 
-        public DeferredConfigurableExtensionHolder(String name, TypeOf<T> publicType, T extension) {
+        DeferredConfigurableExtensionHolder(String name, TypeOf<T> publicType, T extension) {
             super(publicType, extension);
             this.name = name;
         }
