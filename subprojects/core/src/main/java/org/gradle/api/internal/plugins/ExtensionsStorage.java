@@ -165,10 +165,6 @@ public class ExtensionsStorage {
             return extension;
         }
 
-        public T configure(Closure configuration) {
-            return configure(ConfigureUtil.configureUsing(configuration));
-        }
-
         public T configure(Action<? super T> action) {
             action.execute(extension);
             return extension;
