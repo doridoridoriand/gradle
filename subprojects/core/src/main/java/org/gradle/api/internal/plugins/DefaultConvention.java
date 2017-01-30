@@ -269,7 +269,7 @@ public class DefaultConvention implements Convention, ExtensionContainerInternal
 
         @Override
         public void invokeMethod(String name, InvokeMethodResult result, Object... args) {
-            if (extensionsStorage.isConfigureExtensionMethod(name, args)) {
+            if (isConfigureExtensionMethod(name, args)) {
                 result.result(extensionsStorage.configureExtension(name, args));
                 return;
             }
@@ -288,7 +288,7 @@ public class DefaultConvention implements Convention, ExtensionContainerInternal
 
         @Override
         public boolean hasMethod(String name, Object... args) {
-            if (extensionsStorage.isConfigureExtensionMethod(name, args)) {
+            if (isConfigureExtensionMethod(name, args)) {
                 return true;
             }
             for (Object object : plugins.values()) {
@@ -298,6 +298,10 @@ public class DefaultConvention implements Convention, ExtensionContainerInternal
                 }
             }
             return false;
+        }
+
+        private boolean isConfigureExtensionMethod(String name, Object[] args) {
+            return extensionsStorage.isConfigureExtensionMethod(name, args);
         }
     }
 }
