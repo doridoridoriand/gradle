@@ -25,10 +25,13 @@ import org.gradle.internal.reflect.Types;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A {@link Type} with generics.
@@ -101,14 +104,14 @@ public abstract class TypeOf<T> {
     }
 
     public final List<Type> getTypeArguments() {
-        List<Type> typeArguments = new ArrayList<Type>();
         if (token.isArray()) {
-            typeArguments.add(token.getComponentType().getType());
-        } else if (token.getType() instanceof ParameterizedType) {
-            ParameterizedType pt = (ParameterizedType) token.getType();
-            Collections.addAll(typeArguments, pt.getActualTypeArguments());
+            return singletonList(token.getComponentType().getType());
         }
-        return typeArguments;
+        if (token.getType() instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) token.getType();
+            return asList(pt.getActualTypeArguments());
+        }
+        return emptyList();
     }
 
     public final List<TypeOf<?>> getTypeOfArguments() {
