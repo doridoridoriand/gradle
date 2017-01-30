@@ -22,7 +22,6 @@ import org.gradle.api.UnknownDomainObjectException;
 import org.gradle.api.reflect.TypeOf;
 import org.gradle.internal.HasInternalProtocol;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
