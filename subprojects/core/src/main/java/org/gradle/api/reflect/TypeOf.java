@@ -44,38 +44,30 @@ import static java.util.Collections.singletonList;
 public abstract class TypeOf<T> {
 
     public static <T> TypeOf<T> of(Class<T> type) {
-        return new TypeOf<T>(TypeToken.of(type)) {
-        };
+        return new TypeOf<T>(TypeToken.of(type)) {};
     }
 
     public static <T> TypeOf<T> of(Type type) {
-        return new TypeOf<T>((TypeToken<T>) TypeToken.of(type)) {
-        };
+        return new TypeOf<T>(Cast.<TypeToken<T>>uncheckedCast(TypeToken.of(type))) {};
     }
 
     public static <T> TypeOf<List<T>> listOf(Class<T> elementType) {
         return new TypeOf<List<T>>(
-            new TypeToken<List<T>>() {
-            }.where(new TypeParameter<T>() {
-            }, elementType)) {
-        };
+            new TypeToken<List<T>>() {}.where(
+                new TypeParameter<T>() {}, elementType)) {};
     }
 
     public static <T> TypeOf<Set<T>> setOf(Class<T> elementType) {
         return new TypeOf<Set<T>>(
-            new TypeToken<Set<T>>() {
-            }.where(new TypeParameter<T>() {
-            }, elementType)) {
-        };
+            new TypeToken<Set<T>>() {}.where(
+                new TypeParameter<T>() {}, elementType)) {};
     }
 
     public static <K, V> TypeOf<Map<K, V>> mapOf(Class<K> keyType, Class<V> valueType) {
         return new TypeOf<Map<K, V>>(
-            new TypeToken<Map<K, V>>() {
-            }.where(new TypeParameter<K>() {
-            }, keyType).where(new TypeParameter<V>() {
-            }, valueType)) {
-        };
+            new TypeToken<Map<K, V>>() {}.where(
+                new TypeParameter<K>() {}, keyType).where(
+                    new TypeParameter<V>() {}, valueType)) {};
     }
 
     private final TypeToken<T> token;
