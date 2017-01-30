@@ -116,18 +116,17 @@ public abstract class TypeOf<T> {
     }
 
     public final List<TypeOf<?>> getTypeOfArguments() {
-        List<TypeOf<?>> typeOfArguments = new ArrayList<TypeOf<?>>();
         List<Type> typeArguments = getTypeArguments();
+        List<TypeOf<?>> typeOfArguments = new ArrayList<TypeOf<?>>(typeArguments.size());
         for (Type typeArgument : typeArguments) {
-            typeOfArguments.add(new TypeOf(TypeToken.of(typeArgument)) {
-            });
+            typeOfArguments.add(of(typeArgument));
         }
         return typeOfArguments;
     }
 
     public final List<Class<?>> getRawTypeArguments() {
         List<TypeOf<?>> typeOfArguments = getTypeOfArguments();
-        List<Class<?>> rawTypeArguments = new ArrayList<Class<?>>();
+        List<Class<?>> rawTypeArguments = new ArrayList<Class<?>>(typeOfArguments.size());
         for (TypeOf<?> typeOfArgument : typeOfArguments) {
             rawTypeArguments.add(typeOfArgument.getRawType());
         }
