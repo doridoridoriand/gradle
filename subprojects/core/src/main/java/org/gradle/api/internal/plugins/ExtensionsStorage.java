@@ -118,15 +118,16 @@ public class ExtensionsStorage {
 
     public Object getByName(String name) {
         Object extension = findByName(name);
-        if (extension == null) {
-            throw new UnknownDomainObjectException("Extension with name '" + name + "' does not exist. Currently registered extension names: " + extensions.keySet());
+        if (extension != null) {
+            return extension;
         }
-        return extension;
+        throw new UnknownDomainObjectException(
+            "Extension with name '" + name + "' does not exist. Currently registered extension names: " + extensions.keySet());
     }
 
     public Object findByName(String name) {
         ExtensionHolder extensionHolder = extensions.get(name);
-        return extensionHolder == null ? null : extensionHolder.get();
+        return extensionHolder != null ? extensionHolder.get() : null;
     }
 
     private <T> ExtensionHolder<T> wrap(String name, TypeOf<T> publicType, T extension) {
