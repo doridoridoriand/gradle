@@ -89,46 +89,54 @@ public class Types {
      */
     public static String getGenericSimpleName(Type type) {
         StringBuilder builder = new StringBuilder();
-        simpleGenericNameOf(builder, type);
+        simpleGenericNameOf(type, builder);
         return builder.toString();
     }
 
-    private static void simpleGenericNameOf(StringBuilder builder, Type type) {
+    private static void simpleGenericNameOf(Type type, StringBuilder builder) {
         if (type instanceof Class) {
             builder.append(((Class) type).getSimpleName());
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            simpleGenericNameOf(builder, parameterizedType.getRawType());
-            builder.append("<");
-            boolean multi = false;
-            for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
-                if (multi) {
-                    builder.append(", ");
-                }
-                simpleGenericNameOf(builder, typeArgument);
-                multi = true;
-            }
-            builder.append(">");
+            simpleGenericNameOf((ParameterizedType) type, builder);
         } else if (type instanceof GenericArrayType) {
-            GenericArrayType arrayType = (GenericArrayType) type;
-            simpleGenericNameOf(builder, arrayType.getGenericComponentType());
-            builder.append("[]");
+            simpleGenericNameOf((GenericArrayType) type, builder);
         } else if (type instanceof TypeVariable) {
-            TypeVariable typeVariable = (TypeVariable) type;
-            builder.append(typeVariable.getName());
+            builder.append(((TypeVariable) type).getName());
         } else if (type instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type;
-            builder.append("? extends ");
-            boolean multi = false;
-            for (Type typeArgument : wildcardType.getUpperBounds()) {
-                if (multi) {
-                    builder.append(", ");
-                }
-                simpleGenericNameOf(builder, typeArgument);
-                multi = true;
-            }
+            simpleGenericNameOf((WildcardType) type, builder);
         } else {
             throw new IllegalArgumentException("Don't know how to deal with type:" + type);
+        }
+    }
+
+    private static void simpleGenericNameOf(ParameterizedType parameterizedType, StringBuilder builder) {
+        simpleGenericNameOf(parameterizedType.getRawType(), builder);
+        builder.append("<");
+        boolean multi = false;
+        for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
+            if (multi) {
+                builder.append(", ");
+            }
+            simpleGenericNameOf(typeArgument, builder);
+            multi = true;
+        }
+        builder.append(">");
+    }
+
+    private static void simpleGenericNameOf(GenericArrayType arrayType, StringBuilder builder) {
+        simpleGenericNameOf(arrayType.getGenericComponentType(), builder);
+        builder.append("[]");
+    }
+
+    private static void simpleGenericNameOf(WildcardType wildcardType, StringBuilder builder) {
+        builder.append("? extends ");
+        boolean multi = false;
+        for (Type typeArgument : wildcardType.getUpperBounds()) {
+            if (multi) {
+                builder.append(", ");
+            }
+            simpleGenericNameOf(typeArgument, builder);
+            multi = true;
         }
     }
 }
