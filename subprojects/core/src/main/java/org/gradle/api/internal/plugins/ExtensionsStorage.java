@@ -35,7 +35,7 @@ public class ExtensionsStorage {
     private final Map<String, ExtensionHolder> extensions = new LinkedHashMap<String, ExtensionHolder>();
 
     public <T> void add(TypeOf<T> publicType, String name, T extension) {
-        if (extensions.containsKey(name)) {
+        if (hasExtension(name)) {
             throw new IllegalArgumentException(String.format("Cannot add extension with name '%s', as there is an extension already registered with that name.", name));
         }
         extensions.put(name, wrap(name, publicType, extension));
@@ -68,7 +68,7 @@ public class ExtensionsStorage {
     }
 
     public boolean isConfigureExtensionMethod(String methodName, Object... arguments) {
-        return extensions.containsKey(methodName) && arguments.length == 1 && arguments[0] instanceof Closure;
+        return hasExtension(methodName) && arguments.length == 1 && arguments[0] instanceof Closure;
     }
 
     public <T> T configureExtension(String methodName, Object... arguments) {
