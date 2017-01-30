@@ -26,8 +26,8 @@ import org.gradle.internal.UncheckedException;
 import org.gradle.listener.ActionBroadcast;
 import org.gradle.util.ConfigureUtil;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -87,16 +87,20 @@ public class ExtensionsStorage {
     }
 
     public <T> T findByType(TypeOf<T> type) {
-        ExtensionHolder<T> holder;
-        try {
-            holder = getHolderByType(type);
-        } catch (UnknownDomainObjectException e) {
-            return null;
-        }
-        return holder.get();
+        ExtensionHolder<T> found = findHolderByType(type);
+        return found != null ? found.get() : null;
     }
 
     private <T> ExtensionHolder<T> getHolderByType(TypeOf<T> type) {
+        ExtensionHolder<T> found = findHolderByType(type);
+        if (found != null) {
+            return found;
+        }
+        throw new UnknownDomainObjectException(
+            "Extension of type '" + type.getSimpleName() + "' does not exist. Currently registered extension types: " + registeredExtensionTypeNames());
+    }
+
+    private <T> ExtensionHolder<T> findHolderByType(TypeOf<T> type) {
         // Find equal type first, then assignable
         ExtensionHolder<T> firstAssignable = null;
         for (ExtensionHolder extensionHolder : extensions.values()) {
@@ -108,14 +112,7 @@ public class ExtensionsStorage {
                 firstAssignable = extensionHolder;
             }
         }
-        if (firstAssignable != null) {
-            return firstAssignable;
-        }
-        List<String> types = new LinkedList<String>();
-        for (ExtensionHolder holder : extensions.values()) {
-            types.add(holder.getPublicType().getSimpleName());
-        }
-        throw new UnknownDomainObjectException("Extension of type '" + type.getSimpleName() + "' does not exist. Currently registered extension types: " + types);
+        return firstAssignable;
     }
 
     public Object getByName(String name) {
@@ -135,6 +132,14 @@ public class ExtensionsStorage {
             return new DeferredConfigurableExtensionHolder<T>(name, publicType, extension);
         }
         return new ExtensionHolder<T>(publicType, extension);
+    }
+
+    private List<String> registeredExtensionTypeNames() {
+        List<String> types = new ArrayList<String>(extensions.size());
+        for (ExtensionHolder holder : extensions.values()) {
+            types.add(holder.getPublicType().getSimpleName());
+        }
+        return types;
     }
 
     private <T> boolean isDeferredConfigurable(T extension) {
