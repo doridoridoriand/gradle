@@ -31,6 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.gradle.internal.Cast.uncheckedCast;
+
 public class ExtensionsStorage {
     private final Map<String, ExtensionHolder> extensions = new LinkedHashMap<String, ExtensionHolder>();
 
@@ -73,9 +75,8 @@ public class ExtensionsStorage {
 
     public <T> T configureExtension(String methodName, Object... arguments) {
         Closure closure = (Closure) arguments[0];
-        Action<T> action = ConfigureUtil.configureUsing(closure);
-        ExtensionHolder<T> extensionHolder = extensions.get(methodName);
-        return extensionHolder.configure(action);
+        ExtensionHolder<T> extensionHolder = uncheckedCast(extensions.get(methodName));
+        return extensionHolder.configure(ConfigureUtil.configureUsing(closure));
     }
 
     public <T> void configureExtension(TypeOf<T> type, Action<? super T> action) {
@@ -106,10 +107,10 @@ public class ExtensionsStorage {
         for (ExtensionHolder extensionHolder : extensions.values()) {
             TypeOf<?> candidate = extensionHolder.getPublicType();
             if (type.equals(candidate)) {
-                return extensionHolder;
+                return uncheckedCast(extensionHolder);
             }
             if (firstAssignable == null && type.isAssignableFrom(candidate.getType())) {
-                firstAssignable = extensionHolder;
+                firstAssignable = uncheckedCast(extensionHolder);
             }
         }
         return firstAssignable;
