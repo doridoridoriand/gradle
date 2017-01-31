@@ -160,6 +160,8 @@ public interface ExtensionContainer {
     @Incubating
     <T> void configure(Class<T> type, Action<? super T> action);
 
+    <T> void configure(TypeOf<T> type, Action<? super T> action);
+
     /**
      * The extra properties extension in this extension container.
      *

@@ -183,7 +183,12 @@ public class DefaultConvention implements Convention, ExtensionContainerInternal
 
     @Override
     public <T> void configure(Class<T> type, Action<? super T> action) {
-        extensionsStorage.configureExtension(TypeOf.of(type), action);
+        configure(TypeOf.of(type), action);
+    }
+
+    @Override
+    public <T> void configure(TypeOf<T> type, Action<? super T> action) {
+        extensionsStorage.configureExtension(type, action);
     }
 
     @Override
