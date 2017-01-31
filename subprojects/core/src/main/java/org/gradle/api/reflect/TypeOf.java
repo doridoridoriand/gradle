@@ -17,7 +17,6 @@
 package org.gradle.api.reflect;
 
 import com.google.common.base.Objects;
-import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
 import org.gradle.api.Incubating;
 import org.gradle.internal.Cast;
@@ -27,8 +26,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -49,25 +46,6 @@ public abstract class TypeOf<T> {
 
     public static <T> TypeOf<T> of(Type type) {
         return new TypeOf<T>(Cast.<TypeToken<T>>uncheckedCast(TypeToken.of(type))) {};
-    }
-
-    public static <T> TypeOf<List<T>> listOf(Class<T> elementType) {
-        return new TypeOf<List<T>>(
-            new TypeToken<List<T>>() {}.where(
-                new TypeParameter<T>() {}, elementType)) {};
-    }
-
-    public static <T> TypeOf<Set<T>> setOf(Class<T> elementType) {
-        return new TypeOf<Set<T>>(
-            new TypeToken<Set<T>>() {}.where(
-                new TypeParameter<T>() {}, elementType)) {};
-    }
-
-    public static <K, V> TypeOf<Map<K, V>> mapOf(Class<K> keyType, Class<V> valueType) {
-        return new TypeOf<Map<K, V>>(
-            new TypeToken<Map<K, V>>() {}.where(
-                new TypeParameter<K>() {}, keyType).where(
-                    new TypeParameter<V>() {}, valueType)) {};
     }
 
     private final TypeToken<T> token;

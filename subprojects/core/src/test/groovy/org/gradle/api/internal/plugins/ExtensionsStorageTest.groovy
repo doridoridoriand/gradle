@@ -226,19 +226,19 @@ class ExtensionsStorageTest extends Specification {
         given:
         storage.add TypeOf.of(Integer), 'int', 23
         storage.add TypeOf.of(Number), 'num', 42
-        storage.add TypeOf.listOf(String), 'stringList', ['string']
+        storage.add new TypeOf<List<String>>() {}, 'stringList', ['string']
 
         expect:
         storage.findByType(TypeOf.of(Number)) == 42
-        storage.findByType(TypeOf.listOf(String)) == ['string']
+        storage.findByType(new TypeOf<List<String>>() {}) == ['string']
     }
 
     def "get schema"() {
         given:
-        storage.add TypeOf.listOf(String), 'stringList', ['string']
+        storage.add new TypeOf<List<String>>() {}, 'stringList', ['string']
 
         expect:
-        storage.getSchema() == [list: TypeOf.of(List), set: TypeOf.of(Set), stringList: TypeOf.listOf(String)]
+        storage.getSchema() == [list: TypeOf.of(List), set: TypeOf.of(Set), stringList: new TypeOf<List<String>>() {}]
     }
 
     def "only considers public type when addressing extensions by type"() {

@@ -18,6 +18,8 @@ package org.gradle.api.reflect
 
 import spock.lang.Specification
 
+import java.lang.reflect.Type
+
 class TypeOfTest extends Specification {
 
     def "to string"() {
@@ -54,9 +56,7 @@ class TypeOfTest extends Specification {
     def "factory methods"() {
         expect:
         TypeOf.of(String) == new TypeOf<String>() {}
-        TypeOf.listOf(String) == new TypeOf<List<String>>() {}
-        TypeOf.setOf(Integer) == new TypeOf<Set<Integer>>() {}
-        TypeOf.mapOf(String, Integer) == new TypeOf<Map<String, Integer>>() {}
+        TypeOf.of((Type) String) == new TypeOf<String>() {}
     }
 
     def "can extract type arguments"() {
@@ -64,7 +64,7 @@ class TypeOfTest extends Specification {
         def mapType = new TypeOf<Map<String, List<Integer>>>() {}
 
         expect:
-        mapType.typeArguments == [String, TypeOf.listOf(Integer).type]
+        mapType.typeArguments == [String, new TypeOf<List<Integer>>() {}.type]
         mapType.typeOfArguments[1].typeArguments[0] == Integer
     }
 
@@ -73,7 +73,7 @@ class TypeOfTest extends Specification {
         def mapType = new TypeOf<Map<String, List<Integer>>>() {}
 
         expect:
-        mapType.typeOfArguments == [TypeOf.of(String), TypeOf.listOf(Integer)]
+        mapType.typeOfArguments == [TypeOf.of(String), new TypeOf<List<Integer>>() {}]
         mapType.typeOfArguments[1].typeArguments[0] == Integer
     }
 

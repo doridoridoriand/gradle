@@ -199,21 +199,21 @@ class ExtensionContainerTest extends Specification {
 
     def "can register extension with generic public type"() {
         given:
-        container.add TypeOf.listOf(String), 'foo', []
+        container.add new TypeOf<List<String>>() {}, 'foo', []
 
         expect:
         container.findByType(List) != null
-        container.findByType(TypeOf.listOf(String)) != null
+        container.findByType(new TypeOf<List<String>>() {}) != null
     }
 
     def "can get extensions schema"() {
         given:
         container.create Parent, 'foo', Child
         container.create Capability, 'bar', Impl
-        container.add TypeOf.listOf(String), 'baz', []
+        container.add new TypeOf<List<String>>() {}, 'baz', []
 
         expect:
-        container.schema == [ext: TypeOf.of(ExtraPropertiesExtension), foo: TypeOf.of(Parent), bar: TypeOf.of(Capability), baz: TypeOf.listOf(String)]
+        container.schema == [ext: TypeOf.of(ExtraPropertiesExtension), foo: TypeOf.of(Parent), bar: TypeOf.of(Capability), baz: new TypeOf<List<String>>() {}]
     }
 }
 
